@@ -37,6 +37,15 @@ class Entry extends Model
         'collection_id' => 'integer',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function (Entry $record) {
+            if (blank($record->user_id)) {
+                $record->user_id = auth()->id();
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
