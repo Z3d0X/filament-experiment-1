@@ -1,5 +1,16 @@
 models:
-  # ...
+  Collection:
+    name: string index
+    slug: string unique
+    entry_table: string default:entries index
+    active: boolean default:true index
+    fields: json nullable
+    options: json nullable
 
-controllers:
-  # ...
+  Entry:
+    title: string nullable index
+    content: longtext nullable
+    data: json
+    published_at: datetime nullable index
+    status: string nullable index
+    user_id: id nullable foreign:users.id
