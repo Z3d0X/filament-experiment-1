@@ -34,4 +34,9 @@ class Collection extends Model
         'fields' => 'array',
         'options' => 'array',
     ];
+
+    public function entries()
+    {
+        return $this->hasMany(Entry::class);
+    }
 }

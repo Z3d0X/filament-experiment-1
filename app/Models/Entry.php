@@ -21,6 +21,7 @@ class Entry extends Model
         'published_at',
         'status',
         'user_id',
+        'collection_id',
     ];
 
     /**
@@ -33,10 +34,16 @@ class Entry extends Model
         'data' => 'array',
         'published_at' => 'datetime',
         'user_id' => 'integer',
+        'collection_id' => 'integer',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class);
     }
 }

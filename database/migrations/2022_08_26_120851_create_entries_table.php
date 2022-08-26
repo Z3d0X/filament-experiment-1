@@ -18,6 +18,7 @@ class CreateEntriesTable extends Migration
         Schema::create('entries', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable()->index();
+            $table->foreignId('collection_id')->constrained();
             $table->longText('content')->nullable();
             $table->json('data');
             $table->dateTime('published_at')->nullable()->index();
