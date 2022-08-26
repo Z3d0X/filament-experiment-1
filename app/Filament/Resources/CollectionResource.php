@@ -11,6 +11,7 @@ use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -36,7 +37,11 @@ class CollectionResource extends Resource
                     ->schema([
                         TextInput::make('name')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->lazy()
+                            ->autocomplete('off')
+                            ->afterStateUpdated(fn ($set, $state) => $set('slug', Str::slug($state))),
+
                         TextInput::make('slug')
                             ->required()
                             ->maxLength(255),
@@ -55,6 +60,18 @@ class CollectionResource extends Resource
                                 Block::make('text')
                                     ->label('Text input')
                                     ->icon('heroicon-o-annotation')
+                                    ->schema([
+                                        static::getFieldNameInput(),
+                                        Select::make('type')
+                                            ->options([
+                                                'text' => 'Text',
+                                                'email' => 'Email',
+                                                'number' => 'Number',
+                                            ]),
+                                        Checkbox::make('is_required'),
+                                    ]),
+                                Block::make('textarea')
+                                    ->icon('heroicon-o-document-text')
                                     ->schema([
                                         static::getFieldNameInput(),
                                         Checkbox::make('is_required'),
@@ -113,18 +130,12 @@ class CollectionResource extends Resource
     {
         return Grid::make()
             ->schema([
-                TextInput::make('name')
-                    ->lazy()
-                    ->afterStateUpdated(function (Closure $set, $state) {
-                        $label = Str::of($state)
-                            ->kebab()
-                            ->replace(['-', '_'], ' ')
-                            ->ucfirst();
-
-                        $set('label', $label);
-                    })
-                    ->required(),
                 TextInput::make('label')
+                    ->required()
+                    ->lazy()
+                    ->afterStateUpdated(fn (Closure $set, $state) => $set('name', Str::snake($state))),
+
+                TextInput::make('name')
                     ->required(),
             ]);
     }
